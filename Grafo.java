@@ -40,51 +40,71 @@ public class Grafo {
     }
 
     private boolean comprobar(Nodo comprobar,String dato) {
+
         //caso inicial
-        if(dato.equals(comprobar.caracter) && pila.peek()=="I"){
+        if(dato.equals(comprobar.caracter) && pila.peek().equals("I")){
             // System.out.println("1");
             pila.pop();
             pila.add("F");
-            //System.out.println(dato);
+            //System.out.println(dato+"---");
             pila.add(dato);
             return true;
         }
         //caso encontrar par
-        else if(dato.equals(comprobar.caracter) && pila.peek()==comprobar.caracter){
+        else if(dato.equals(")") ||dato.equals("]") ||dato.equals("}") ){
+            //else if(dato.equals(comprobar.caracter) && pila.peek()==comprobar.caracter){
             //System.out.println("2");
-            pila.pop();
-            return true;
+            //pila.pop();
+            //return true;
+            if(dato.equals(")") && pila.peek().equals("(")){
+                //System.out.println("2");
+                pila.pop();
+                return true;
+            }else if(dato.equals(")") && pila.peek().equals("[")){
+                //System.out.println("3");
+                return false;
+            }else if(dato.equals(")") && pila.peek().equals("{")){
+                return false;
+            }
+            else if(dato.equals("}") &&  pila.peek().equals("{")) {
+                //System.out.println("2");
+                pila.pop();
+                return true;
+            }else if(dato.equals("}") &&  pila.peek().equals("[")){
+                //System.out.println("3");
+                return false;
+            }else if(dato.equals("}") &&  pila.peek().equals("(")) {
+                //System.out.println("3");
+                return false;
+            }else if(dato.equals("]") &&  pila.peek().equals("[")) {
+                //System.out.println("2");
+                pila.pop();
+                return true;
+            }
+            else if(dato.equals("]") &&  pila.peek().equals("(")) {
+                //System.out.println("3");
+                return false;
+            }else if(dato.equals("]") &&  pila.peek().equals("{")) {
+                //System.out.println("3");
+                return false;
+            }
+            else if((dato.equals(")") || (dato.equals("]") || (dato.equals("}")) && pila.peek().equals("I")))){
+                //System.out.println("3");
+                return false;
+            }
+            return false;
+
         }
         //caso agregar
-        else if(dato.equals(comprobar.caracter) && (pila.peek()=="(" || pila.peek()=="[" ||pila.peek()=="{")){
+        else if(dato.equals(comprobar.caracter) && (pila.peek().equals("(") || pila.peek().equals("[") || pila.peek().equals("{")||pila.peek().equals("I"))){
             if(dato.equals("(") || dato.equals("[") || dato.equals("{")){
                 //System.out.println("3");
                 //  System.out.println(dato);
                 pila.add(dato);
                 return true;
-            }else {
-                if(dato.equals(")") && pila.peek()=="("){
-                    //  System.out.println("2");
-                    pila.pop();
-                    return true;
-                }else if(dato.equals("}") &&  pila.peek()=="{"){
-
-                    //System.out.println("2");
-                    pila.pop();
-                    return true;
-                }else if(dato.equals("]") &&  pila.peek()=="[") {
-
-                    //System.out.println("2");
-                    pila.pop();
-                    return true;
-                }
-                return false;
-
-
             }
-
         }        //caso final
-        else if(dato.equals(comprobar.caracter) && pila.peek()=="F"){
+        else if(dato.equals(comprobar.caracter) && pila.peek().equals("F")) {
             //System.out.println("4");
             return true;
         }
@@ -101,7 +121,7 @@ public class Grafo {
         //agregar
         grafo.get(0).add(new Nodo(dato1,0,dato1));
         //final
-        grafo.get(0).add(new Nodo("a",0,"F"));
+        grafo.get(0).add(new Nodo("",0,"F"));
     }
 
 
@@ -115,13 +135,13 @@ public class Grafo {
             System.out.println();
         }
     }
-    public void entrada() {
+    public void entra() {
         Scanner entradaScanner = new Scanner(System.in);
         System.out.println("Ingrese la expresion:");
         entrada = entradaScanner.nextLine();
         //System.out.println(entrada);
         dato=separador(entrada);
-        dato=agregarA(dato);
+        //dato=agregarA(dato);
     }
 
     private String[] agregarA(String[] cadena) {
@@ -129,11 +149,14 @@ public class Grafo {
         for (int i = 0; i < cadena.length; i++) {
             tmp[i] = cadena[i];
         }
-        tmp[cadena.length] = "a";
+
+        tmp[cadena.length] = "";
+        //System.out.println(tmp.length);
         return tmp;
     }
         private String[] separador(String a){
         String[] salida = a.split("");
+        //System.out.println(salida.length);
         return salida;
     }
 
@@ -144,14 +167,23 @@ public class Grafo {
         prueba.añadir("[","]");
         prueba.añadir("{","}");
 
-  prueba.entrada();
+        prueba.entra();
 
-        prueba.dato= new String[]{"(",")","a"};
+        //prueba.dato= new String[]{"{","{","[","(","{","}",")","}","}","}"};
+        //prueba.dato= new String[]{"[","(","{","}",")","}"};
+        //prueba.dato= new String[]{"[","]"};
+        //prueba.dato= new String[]{"{","(",")","[","(",")","]","}"};
         for(int i=0;i<prueba.dato.length;i++){
-            System.out.println(prueba.dato[i]);
+            System.out.print(prueba.dato[i]);
         }
+        //System.out.println();
         //prueba.imprimir();
-        System.out.println(prueba.probar());
+
+        if(prueba.probar()){
+            System.out.print(": Esta cadena ES valida");
+        }else{
+            System.out.print(": Esta cadena NO ES valida ");
+        }
 
     }
 
